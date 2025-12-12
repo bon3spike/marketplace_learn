@@ -4,7 +4,7 @@ import { Z_INDEX_LEVEL_2, HEADER_HEIGHT } from 'consts'
 import colors from 'consts/colors'
 
 export const Wrapper = styled.div`
-    padding: 14px 20 px;
+    padding: 14px 20px;
     display: flex;
     align-items: center;
     transition: margin 0,2s ease-out;
