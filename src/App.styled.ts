@@ -19,7 +19,8 @@ export const AppStyles = createGlobalStyle`
     line-height: 1.3;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: ${colors.primary};
+    color: #111;
+    background-color: #f3f4f6;
   }
 
   *,
@@ -76,7 +77,7 @@ export const AppLayout = styled.div`
 export const PageWrapper = styled.main`
   flex: 1;
   width: 100%;
-  padding: 20px;
+  padding: 20px 32px 40px;
 `
 
 export const Footer = styled.footer`

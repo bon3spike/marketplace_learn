@@ -4,7 +4,7 @@ import { T_AppThunk, T_Dispatch } from 'store/types'
 import { I_AppStore } from './types'
 
 const initialState: I_AppStore = {
-  isLogged: false,
+  isLogged: true,
   isAppLoading: false,
 }
 
