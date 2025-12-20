@@ -7,6 +7,12 @@ export const Wrapper = styled.div`
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
 `
 
 export const LikeWrapper = styled.div`
@@ -70,4 +76,13 @@ export const Desc = styled.p`
   font-size: 14px;
   color: #444;
   min-height: 48px;
+`
+
+export const BtnsWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+
+  > * {
+    flex: 1 1 auto;
+  }
 `

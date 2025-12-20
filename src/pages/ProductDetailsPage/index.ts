@@ -1,1 +1,1 @@
-export { default } from './AccountDetailsPage'
+export { default } from './ProductDetailsPage'

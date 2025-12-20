@@ -3,9 +3,8 @@ import styled from 'styled-components'
 
 import colors from 'consts/colors'
 
-export interface I_ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
-  type?: 'primary' | 'secondary' | 'ghost'
+export interface I_ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+  type?: 'primary' | 'secondary' | 'ghost' | 'danger'
   block?: boolean
   children: ReactNode
 }
@@ -47,6 +46,8 @@ export const Button = styled(
         return colors.secondary
       case 'ghost':
         return 'transparent'
+      case 'danger':
+        return colors.danger
       default:
         return colors.primary
     }

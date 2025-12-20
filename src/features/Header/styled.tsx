@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { Link } from 'react-router-dom'
 
@@ -86,7 +86,7 @@ export const BtnSearch = styled.button`
   background-size: contain;
 `
 
-const badgeMixin = `
+const badgeMixin = css<I_CountProps>`
   position: relative;
   &::after {
     background-color: ${colors.red};
@@ -98,7 +98,7 @@ const badgeMixin = `
     width: 18px;
     height: 18px;
     font-size: 12px;
-    display: flex;
+    display: ${({ count }) => (count ? 'flex' : 'none')};
     align-items: center;
     justify-content: center;
   }
@@ -109,6 +109,7 @@ export const BtnOrders = styled((props: I_CountProps) => (
     <Link to={paths.accountSettings} />
   </div>
 ))`
+  position: relative;
   cursor: pointer;
   width: 20px;
   height: 20px;
@@ -116,6 +117,11 @@ export const BtnOrders = styled((props: I_CountProps) => (
   background-size: contain;
   margin-left: 12px;
   ${badgeMixin};
+
+  > a {
+    position: absolute;
+    inset: 0;
+  }
 
   &::after {
     content: ${({ count }) => (count ? `"${count}"` : '""')};
@@ -127,6 +133,7 @@ export const BtnFavorites = styled((props: I_CountProps) => (
     <Link to={paths.favorites} />
   </div>
 ))`
+  position: relative;
   cursor: pointer;
   width: 20px;
   height: 20px;
@@ -134,6 +141,11 @@ export const BtnFavorites = styled((props: I_CountProps) => (
   background-size: contain;
   margin-left: 20px;
   ${badgeMixin};
+
+  > a {
+    position: absolute;
+    inset: 0;
+  }
 
   &::after {
     content: ${({ count }) => (count ? `"${count}"` : '""')};
@@ -159,6 +171,7 @@ export const BtnCart = styled((props: I_CountProps) => (
     <Link to={paths.cart} />
   </div>
 ))`
+  position: relative;
   cursor: pointer;
   width: 20px;
   height: 20px;
@@ -166,6 +179,11 @@ export const BtnCart = styled((props: I_CountProps) => (
   background-size: contain;
   margin: 0 20px 0 24px;
   ${badgeMixin};
+
+  > a {
+    position: absolute;
+    inset: 0;
+  }
 
   &::after {
     content: ${({ count }) => (count ? `"${count}"` : '""')};
