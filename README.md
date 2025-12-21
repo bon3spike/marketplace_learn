@@ -1,47 +1,61 @@
-# Getting Started with Create React App
+# Marketplace Learn — Monorepo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Учебный монорепозиторий маркетплейса:
+- `hs-mp-front` — React‑приложение (CRA + TypeScript).
+- `hs-mp-srv` — NestJS API с TypeORM и PostgreSQL (Docker compose в папке сервиса).
+- `hs-mp-admin`, `hs-mp-seller` — заготовки под будущие части.
 
-## Available Scripts
+Загрузки картинок складываются в `hs-mp-srv/storage/images/products` (в git только `.gitkeep`).
 
-In the project directory, you can run:
+## Быстрый старт
 
-### `npm start`
+### 1) Клонировать и поставить зависимости
+```bash
+git clone https://github.com/bon3spike/marketplace_learn.git
+cd marketplace
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+cd hs-mp-srv && npm install
+cd ../hs-mp-front && npm install
+2) Настроить API (hs-mp-srv/.env по умолчанию)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+PORT=3002
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5433
+POSTGRES_USER=nest_test
+POSTGRES_PASSWORD=nest_test
+POSTGRES_DATABASE=nest_test
+POSTGRES_DB=nest_test
+POSTGRES_HOST_PORT=5433
+PgAdmin: http://localhost:5050 (логин mw_marketplace@admin.com, пароль mw_marketplace).
 
-### `npm test`
+3) Поднять базу
+bash
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+cd hs-mp-srv
+docker compose up -d   # Postgres на 5433, pgAdmin на 5050
+4) Запустить API
+bash
 
-### `npm run build`
+cd hs-mp-srv
+npm run start:dev      # http://localhost:3002
+Маршруты: /products, /users (CRUD, multipart для загрузки картинок в products).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+5) Запустить фронт
+bash
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+cd hs-mp-front
+npm start              # http://localhost:3000
+Полезно знать
+PgAdmin из контейнера подключается к Postgres по host.docker.internal (line 5433) или nest_postgres (line 5432).
+Файлы загрузок в git не входят, кроме .gitkeep.
+Меняете порты/креды БД — синхронизируйте .env и docker-compose.yml в hs-mp-srv.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+После замены:
+git add README.md
+git commit -m "docs: update repo overview and setup"
+git push origin main
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-# marketplace_learn
+Если нужен автопатч — скажи, я повторю, когда доступ к FS восстановится.
