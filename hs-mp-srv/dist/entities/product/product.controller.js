@@ -37,9 +37,7 @@ let ProductController = class ProductController {
     async createProduct(body, query, image) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         const safeBody = Object.assign(Object.assign({}, (query !== null && query !== void 0 ? query : {})), (body !== null && body !== void 0 ? body : {}));
-        const stringImage = ((_a = image === null || image === void 0 ? void 0 : image.filename) !== null && _a !== void 0 ? _a : safeBody === null || safeBody === void 0 ? void 0 : safeBody.image)
-            ? (0, fileUploader_1.makeSafeFilename)(String(safeBody.image))
-            : null;
+        const stringImage = (_a = image === null || image === void 0 ? void 0 : image.filename) !== null && _a !== void 0 ? _a : ((safeBody === null || safeBody === void 0 ? void 0 : safeBody.image) ? String(safeBody.image) : null);
         const payload = {
             title: (_c = (_b = safeBody.title) !== null && _b !== void 0 ? _b : safeBody.file) !== null && _c !== void 0 ? _c : null,
             description: (_d = safeBody.description) !== null && _d !== void 0 ? _d : null,

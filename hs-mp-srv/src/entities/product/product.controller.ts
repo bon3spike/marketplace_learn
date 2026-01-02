@@ -71,10 +71,7 @@ export class ProductController {
     @UploadedFile() image?: Express.Multer.File
   ) {
     const safeBody = { ...(query ?? {}), ...(body ?? {}) }
-    const stringImage =
-      (image?.filename ?? safeBody?.image)
-        ? makeSafeFilename(String(safeBody.image))
-        : null
+    const stringImage = image?.filename ?? (safeBody?.image ? String(safeBody.image) : null)
     const payload = {
       title: safeBody.title ?? safeBody.file ?? null,
       description: safeBody.description ?? null,
