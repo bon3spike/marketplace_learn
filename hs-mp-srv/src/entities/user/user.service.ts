@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { genSalt, hash } from 'bcrypt'
 import { Repository } from 'typeorm'
+import { RegisterUserDto } from './dto/registerUser.dto'
 
 import { User } from './user.entity'
 
@@ -11,7 +12,7 @@ export class UserService {
     @InjectRepository(User, 'hs_marketplace')
     private readonly userRepository: Repository<User>
   ) {
-    this.availableFields = ['nameFirst', 'nameLast', 'email', 'gender', 'birthDate']
+    this.availableFields = ['nameFirst', 'nameLast', 'login', 'email', 'phone']
   }
 
   availableFields: string[]
@@ -30,6 +31,19 @@ export class UserService {
     return this.userRepository.find()
   }
 
+  async getUserById(id: number){
+    return await this.userRepository.findOne({ 
+      where: { id },
+      select: this.availableFields as any })
+  }
+
+  async getUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    })
+  }
+
+
   async getUserData(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } })
     if (!user) {
@@ -38,14 +52,17 @@ export class UserService {
     return user
   }
 
-  async createUser(payload: Partial<User>): Promise<User> {
-    const toCreate = this.filterFields(payload as Record<string, any>)
-    if ((payload as Record<string, any>).password) {
-      const salt = await genSalt(10)
-      toCreate.password = await hash((payload as Record<string, any>).password, salt)
-    }
-    const user = this.userRepository.create(toCreate)
-    return this.userRepository.save(user)
+  async createUser(userData: RegisterUserDto){
+    const salt = await genSalt(10)
+
+    const hashedPassword = await hash(userData.password, salt)
+
+    const newUser = this.userRepository.create({
+      ...userData,
+      password: hashedPassword,
+    })
+
+    return this.userRepository.save(newUser)
   }
 
   async updateUserData(id: number, payload: Partial<User>): Promise<User> {

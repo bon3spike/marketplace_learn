@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const types_1 = require("./types");
 let User = class User {
 };
 exports.User = User;
@@ -24,6 +23,14 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ name: 'login', type: 'varchar' }),
+    __metadata("design:type", String)
+], User.prototype, "login", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'phone', type: 'varchar' }),
+    __metadata("design:type", String)
+], User.prototype, "phone", void 0);
+__decorate([
     (0, typeorm_1.Column)({ name: 'password', type: 'varchar' }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
@@ -35,19 +42,6 @@ __decorate([
     (0, typeorm_1.Column)({ name: 'name_last', type: 'varchar' }),
     __metadata("design:type", String)
 ], User.prototype, "nameLast", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ name: 'birth_date', type: 'timestamp', nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "birthDate", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        name: 'gender',
-        type: 'enum',
-        enum: types_1.E_Gender,
-        nullable: true,
-    }),
-    __metadata("design:type", Object)
-], User.prototype, "gender", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)({ name: 'users' })
 ], User);

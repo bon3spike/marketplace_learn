@@ -1,7 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-import { E_Gender } from './types'
-
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
@@ -9,6 +7,12 @@ export class User {
 
   @Column({ name: 'email', type: 'varchar' })
   email!: string
+
+  @Column({ name: 'login', type: 'varchar' })
+  login!: string
+
+  @Column({ name: 'phone', type: 'varchar' })
+  phone!: string
 
   @Column({ name: 'password', type: 'varchar' })
   password!: string
@@ -18,15 +22,4 @@ export class User {
 
   @Column({ name: 'name_last', type: 'varchar' })
   nameLast!: string
-
-  @Column({ name: 'birth_date', type: 'timestamp', nullable: true })
-  birthDate?: Date | null
-
-  @Column({
-    name: 'gender',
-    type: 'enum',
-    enum: E_Gender,
-    nullable: true,
-  })
-  gender?: E_Gender | null
 }

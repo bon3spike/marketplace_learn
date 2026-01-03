@@ -15,83 +15,108 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
+const updateUser_dto_1 = require("./dto/updateUser.dto");
+const loginUser_dto_1 = require("./dto/loginUser.dto");
+const registerUser_dto_1 = require("./dto/registerUser.dto");
+const bcrypt_1 = require("bcrypt");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getAllUsers(res, account) {
+    async getAllUsers() {
         const users = await this.userService.getAllUsers();
-        return {
-            status: 'ok',
-            data: users,
-            account,
-        };
+        return { status: 'ok', data: users };
     }
-    async getUser(id, res) {
-        const userData = await this.userService.getUserData(id);
-        return res.send({
-            status: 'ok',
-            data: userData,
-        });
+    async getUser(id) {
+        const userData = await this.userService.getUserById(id);
+        return { status: 'ok', data: userData };
     }
-    async createUser(req, res) {
-        await this.userService.createUser(req.body);
-        return res.send({ status: 'ok' });
+    async createUser(body) {
+        const user = await this.userService.createUser(body);
+        return { status: 'ok', data: user };
     }
-    async updateUser(id, body, res) {
+    async login(body) {
+        const { loginOrEmail, password } = body;
+        const foundUser = await this.userService.getUserByLoginOrEmail(loginOrEmail);
+        if (!foundUser) {
+            throw new common_1.ForbiddenException();
+        }
+        const isPasswordValid = await (0, bcrypt_1.compare)(password, foundUser.password);
+        if (!isPasswordValid)
+            throw new common_1.ForbiddenException();
+        return { status: 'ok', data: null };
+    }
+    async register(body) {
+        await this.userService.createUser(body);
+        return { status: 'ok', data: null };
+    }
+    async updateUser(id, body) {
         const data = await this.userService.updateUserData(id, body);
-        return res.send({ status: 'ok', data });
+        return { status: 'ok', data };
     }
-    async deleteUser(id, res) {
+    async deleteUser(id) {
         await this.userService.deleteUser(id);
-        return res.send({ status: 'ok' });
+        return { status: 'ok', data: null };
     }
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Get)('/'),
-    (0, common_1.HttpCode)(200),
-    __param(0, (0, common_1.Res)({ passthrough: true })),
-    __param(1, (0, common_1.HostParam)('account')),
+    (0, common_1.Get)('/users'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
 __decorate([
-    (0, common_1.Get)('/:id'),
+    (0, common_1.Get)('/users/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
 __decorate([
-    (0, common_1.Post)('/'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Res)()),
+    (0, common_1.Post)('/users'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [registerUser_dto_1.RegisterUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
 __decorate([
-    (0, common_1.Put)('/:id'),
+    (0, common_1.Post)('/login'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [loginUser_dto_1.LoginUserDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('/register'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [registerUser_dto_1.RegisterUserDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "register", null);
+__decorate([
+    (0, common_1.Put)('/users/:id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object, Object]),
+    __metadata("design:paramtypes", [Number, updateUser_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
 __decorate([
-    (0, common_1.Delete)('/:id'),
+    (0, common_1.Delete)('/users/:id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "deleteUser", null);
 exports.UserController = UserController = __decorate([
-    (0, common_1.Controller)({ path: 'users' }),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

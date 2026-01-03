@@ -21,7 +21,7 @@ const user_entity_1 = require("./user.entity");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
-        this.availableFields = ['nameFirst', 'nameLast', 'email', 'gender', 'birthDate'];
+        this.availableFields = ['nameFirst', 'nameLast', 'login', 'email', 'phone'];
     }
     filterFields(body) {
         const filteredBody = {};
@@ -35,6 +35,17 @@ let UserService = class UserService {
     async getAllUsers() {
         return this.userRepository.find();
     }
+    async getUserById(id) {
+        return await this.userRepository.findOne({
+            where: { id },
+            select: this.availableFields
+        });
+    }
+    async getUserByLoginOrEmail(loginOrEmail) {
+        return this.userRepository.findOne({
+            where: [{ login: loginOrEmail }, { email: loginOrEmail }],
+        });
+    }
     async getUserData(id) {
         const user = await this.userRepository.findOne({ where: { id } });
         if (!user) {
@@ -42,14 +53,11 @@ let UserService = class UserService {
         }
         return user;
     }
-    async createUser(payload) {
-        const toCreate = this.filterFields(payload);
-        if (payload.password) {
-            const salt = await (0, bcrypt_1.genSalt)(10);
-            toCreate.password = await (0, bcrypt_1.hash)(payload.password, salt);
-        }
-        const user = this.userRepository.create(toCreate);
-        return this.userRepository.save(user);
+    async createUser(userData) {
+        const salt = await (0, bcrypt_1.genSalt)(10);
+        const hashedPassword = await (0, bcrypt_1.hash)(userData.password, salt);
+        const newUser = this.userRepository.create(Object.assign(Object.assign({}, userData), { password: hashedPassword }));
+        return this.userRepository.save(newUser);
     }
     async updateUserData(id, payload) {
         const existing = await this.getUserData(id);
