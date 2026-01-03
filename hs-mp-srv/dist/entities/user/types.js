@@ -6,4 +6,3 @@ var E_Gender;
     E_Gender["Male"] = "m";
     E_Gender["Female"] = "f";
 })(E_Gender || (exports.E_Gender = E_Gender = {}));
-//# sourceMappingURL=types.js.map

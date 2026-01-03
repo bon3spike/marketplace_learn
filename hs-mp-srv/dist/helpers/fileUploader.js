@@ -64,4 +64,3 @@ const renameUploadedFile = (filename, directory = storagePaths_1.PRODUCTS_IMAGES
     return updatedFilename;
 };
 exports.renameUploadedFile = renameUploadedFile;
-//# sourceMappingURL=fileUploader.js.map

@@ -4,4 +4,3 @@ exports.UpdateUserDto = void 0;
 class UpdateUserDto {
 }
 exports.UpdateUserDto = UpdateUserDto;
-//# sourceMappingURL=updateUser.dto.js.map

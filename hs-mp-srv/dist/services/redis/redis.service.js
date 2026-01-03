@@ -9,25 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppController = void 0;
+exports.RedisService = void 0;
 const common_1 = require("@nestjs/common");
-const app_service_1 = require("./app.service");
-let AppController = class AppController {
-    constructor(appService) {
-        this.appService = appService;
+const ioredis_1 = require("ioredis");
+let RedisService = class RedisService {
+    constructor(redis) {
+        this.redis = redis;
     }
-    getHello() {
-        return this.appService.getHello();
+    async set(key, data, expire) {
+        if (expire !== undefined) {
+            return this.redis.set(key, JSON.stringify(data), 'EX', expire);
+        }
+        return this.redis.set(key, JSON.stringify(data));
+    }
+    async get(key) {
+        const data = await this.redis.get(key);
+        return data ? JSON.parse(data) : null;
+    }
+    async del(key) {
+        return await this.redis.del(key);
     }
 };
-exports.AppController = AppController;
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
-], AppController.prototype, "getHello", null);
-exports.AppController = AppController = __decorate([
-    (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [app_service_1.AppService])
-], AppController);
+exports.RedisService = RedisService;
+exports.RedisService = RedisService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [ioredis_1.Redis])
+], RedisService);

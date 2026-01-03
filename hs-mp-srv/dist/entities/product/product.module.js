@@ -23,4 +23,3 @@ exports.ProductModule = ProductModule = __decorate([
         exports: [product_service_1.ProductService],
     })
 ], ProductModule);
-//# sourceMappingURL=product.module.js.map

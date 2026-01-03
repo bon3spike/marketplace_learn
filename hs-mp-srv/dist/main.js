@@ -17,4 +17,3 @@ async function bootstrap() {
     await app.listen((_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3000);
 }
 bootstrap();
-//# sourceMappingURL=main.js.map

@@ -19,9 +19,11 @@ const updateUser_dto_1 = require("./dto/updateUser.dto");
 const loginUser_dto_1 = require("./dto/loginUser.dto");
 const registerUser_dto_1 = require("./dto/registerUser.dto");
 const bcrypt_1 = require("bcrypt");
+const jwt_1 = require("@nestjs/jwt");
 let UserController = class UserController {
-    constructor(userService) {
+    constructor(userService, jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
     async getAllUsers() {
         const users = await this.userService.getAllUsers();
@@ -44,7 +46,8 @@ let UserController = class UserController {
         const isPasswordValid = await (0, bcrypt_1.compare)(password, foundUser.password);
         if (!isPasswordValid)
             throw new common_1.ForbiddenException();
-        return { status: 'ok', data: null };
+        const jwt = this.jwtService.sign({ x: 1 }, { secret: 'ggg' });
+        return { status: 'ok', data: { accessToken: jwt }, };
     }
     async register(body) {
         await this.userService.createUser(body);
@@ -117,6 +120,6 @@ __decorate([
 ], UserController.prototype, "deleteUser", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        jwt_1.JwtService])
 ], UserController);
-//# sourceMappingURL=user.controller.js.map

@@ -28,6 +28,20 @@ services:
       - rubin-marketplace-postgres
     restart: unless-stopped
 
+  rubin-marketplace-redis:
+    image: redis:7.4.1-alpine
+    container_name: rubin-marketplace-redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    restart: unless-stopped
+    networks:
+      - rubin-marketplace-network
+
 volumes:
   rubin-marketplace-postgres:
   rubin-marketplace-pgadmin:
+  rubin-marketplace-redis:
+
+
+networks:
+  rubin-marketplace-network:

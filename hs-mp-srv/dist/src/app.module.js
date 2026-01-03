@@ -14,12 +14,13 @@ const config_module_1 = require("./config.module");
 const typeorm_module_1 = require("./db/typeorm.module");
 const product_module_1 = require("./entities/product/product.module");
 const user_module_1 = require("./entities/user/user.module");
+const redis_module_1 = require("../services/redis/redis.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [config_module_1.ConfigModule, typeorm_module_1.TypeOrmModule, user_module_1.UserModule, product_module_1.ProductModule, RedisModule],
+        imports: [config_module_1.ConfigModule, typeorm_module_1.TypeOrmModule, user_module_1.UserModule, product_module_1.ProductModule, redis_module_1.RedisModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

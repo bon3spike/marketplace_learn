@@ -117,4 +117,3 @@ exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)({ path: 'products' }),
     __metadata("design:paramtypes", [product_service_1.ProductService])
 ], ProductController);
-//# sourceMappingURL=product.controller.js.map

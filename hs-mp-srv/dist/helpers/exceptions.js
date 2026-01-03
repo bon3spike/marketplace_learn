@@ -12,4 +12,3 @@ class ForbiddenException extends common_1.HttpException {
     }
 }
 exports.ForbiddenException = ForbiddenException;
-//# sourceMappingURL=exceptions.js.map
