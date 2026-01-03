@@ -20,12 +20,14 @@ import { LoginUserDto } from './dto/loginUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
 import { compare } from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
+import { RedisService } from '../../services/redis/redis.service'
 
 @Controller()
 export class UserController {
   constructor(
   private readonly userService: UserService, 
-  private readonly jwtService: JwtService
+  private readonly jwtService: JwtService,
+  private readonly redisService: RedisService
   ){}
 
   @Get('/users')
@@ -33,6 +35,20 @@ export class UserController {
   async getAllUsers() {
     const users = await this.userService.getAllUsers()
     return { status: 'ok', data: users }
+  }
+
+  @Get('/set-redis-key/:key')
+  @HttpCode(HttpStatus.OK)
+  async setRedisKey(@Param('key') key: string) {
+    await this.redisService.set(key, { test: 123 })
+    return { status: 'ok', data: null }
+  }
+
+  @Get('/get-redis-key/:key')
+  @HttpCode(HttpStatus.OK)
+  async getRedisKey(@Param('key') key: string) {
+    const value = await this.redisService.get(key)
+    return { status: 'ok', data: value }
   }
 
   @Get('/users/:id')

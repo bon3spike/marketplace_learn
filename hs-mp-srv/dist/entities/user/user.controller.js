@@ -20,14 +20,24 @@ const loginUser_dto_1 = require("./dto/loginUser.dto");
 const registerUser_dto_1 = require("./dto/registerUser.dto");
 const bcrypt_1 = require("bcrypt");
 const jwt_1 = require("@nestjs/jwt");
+const redis_service_1 = require("../../services/redis/redis.service");
 let UserController = class UserController {
-    constructor(userService, jwtService) {
+    constructor(userService, jwtService, redisService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.redisService = redisService;
     }
     async getAllUsers() {
         const users = await this.userService.getAllUsers();
         return { status: 'ok', data: users };
+    }
+    async setRedisKey(key) {
+        await this.redisService.set(key, { test: 123 });
+        return { status: 'ok', data: null };
+    }
+    async getRedisKey(key) {
+        const value = await this.redisService.get(key);
+        return { status: 'ok', data: value };
     }
     async getUser(id) {
         const userData = await this.userService.getUserById(id);
@@ -70,6 +80,22 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
+__decorate([
+    (0, common_1.Get)('/set-redis-key/:key'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "setRedisKey", null);
+__decorate([
+    (0, common_1.Get)('/get-redis-key/:key'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('key')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getRedisKey", null);
 __decorate([
     (0, common_1.Get)('/users/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -121,5 +147,6 @@ __decorate([
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        redis_service_1.RedisService])
 ], UserController);

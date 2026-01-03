@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { Redis } from 'ioredis'
+import { InjectRedis } from '@svtslv/nestjs-ioredis'
 
 @Injectable()
 export class RedisService {
-  constructor(private readonly redis: Redis) {}
+  @InjectRedis()
+  private readonly redis!: Redis
 
   async set(key: string, data: { [k: string]: any }, expire?: number) {
     if (expire !== undefined) {

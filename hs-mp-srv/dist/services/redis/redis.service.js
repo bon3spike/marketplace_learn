@@ -12,10 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RedisService = void 0;
 const common_1 = require("@nestjs/common");
 const ioredis_1 = require("ioredis");
+const nestjs_ioredis_1 = require("@svtslv/nestjs-ioredis");
 let RedisService = class RedisService {
-    constructor(redis) {
-        this.redis = redis;
-    }
     async set(key, data, expire) {
         if (expire !== undefined) {
             return this.redis.set(key, JSON.stringify(data), 'EX', expire);
@@ -31,7 +29,10 @@ let RedisService = class RedisService {
     }
 };
 exports.RedisService = RedisService;
+__decorate([
+    (0, nestjs_ioredis_1.InjectRedis)(),
+    __metadata("design:type", ioredis_1.Redis)
+], RedisService.prototype, "redis", void 0);
 exports.RedisService = RedisService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [ioredis_1.Redis])
+    (0, common_1.Injectable)()
 ], RedisService);
