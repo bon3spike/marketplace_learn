@@ -15,10 +15,9 @@ const ioredis_1 = require("ioredis");
 const nestjs_ioredis_1 = require("@svtslv/nestjs-ioredis");
 let RedisService = class RedisService {
     async set(key, data, expire) {
-        if (expire !== undefined) {
-            return this.redis.set(key, JSON.stringify(data), 'EX', expire);
-        }
-        return this.redis.set(key, JSON.stringify(data));
+        return expire
+            ? await this.redis.set(key, JSON.stringify(data), 'EX', expire)
+            : await this.redis.set(key, JSON.stringify(data));
     }
     async get(key) {
         const data = await this.redis.get(key);

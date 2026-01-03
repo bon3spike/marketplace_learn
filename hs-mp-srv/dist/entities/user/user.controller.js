@@ -19,25 +19,17 @@ const updateUser_dto_1 = require("./dto/updateUser.dto");
 const loginUser_dto_1 = require("./dto/loginUser.dto");
 const registerUser_dto_1 = require("./dto/registerUser.dto");
 const bcrypt_1 = require("bcrypt");
-const jwt_1 = require("@nestjs/jwt");
-const redis_service_1 = require("../../services/redis/redis.service");
+const jwt_service_1 = require("../../services/jwt/jwt.service");
+const jwt_auth_guard_1 = require("../../services/jwt/jwt-auth.guard");
+const common_2 = require("@nestjs/common");
 let UserController = class UserController {
-    constructor(userService, jwtService, redisService) {
+    constructor(userService, jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
-        this.redisService = redisService;
     }
     async getAllUsers() {
         const users = await this.userService.getAllUsers();
         return { status: 'ok', data: users };
-    }
-    async setRedisKey(key) {
-        await this.redisService.set(key, { test: 123 });
-        return { status: 'ok', data: null };
-    }
-    async getRedisKey(key) {
-        const value = await this.redisService.get(key);
-        return { status: 'ok', data: value };
     }
     async getUser(id) {
         const userData = await this.userService.getUserById(id);
@@ -56,7 +48,9 @@ let UserController = class UserController {
         const isPasswordValid = await (0, bcrypt_1.compare)(password, foundUser.password);
         if (!isPasswordValid)
             throw new common_1.ForbiddenException();
-        const jwt = this.jwtService.sign({ x: 1 }, { secret: 'ggg' });
+        const jwt = await this.jwtService.setSession({
+            userId: foundUser.id
+        });
         return { status: 'ok', data: { accessToken: jwt }, };
     }
     async register(body) {
@@ -74,37 +68,22 @@ let UserController = class UserController {
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Get)('/users'),
+    (0, common_1.Get)('/'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_2.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUsers", null);
 __decorate([
-    (0, common_1.Get)('/set-redis-key/:key'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('key')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "setRedisKey", null);
-__decorate([
-    (0, common_1.Get)('/get-redis-key/:key'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('key')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "getRedisKey", null);
-__decorate([
-    (0, common_1.Get)('/users/:id'),
+    (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUser", null);
 __decorate([
-    (0, common_1.Post)('/users'),
+    (0, common_1.Post)('/'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -128,7 +107,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "register", null);
 __decorate([
-    (0, common_1.Put)('/users/:id'),
+    (0, common_1.Put)('/:id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
@@ -137,7 +116,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
 __decorate([
-    (0, common_1.Delete)('/users/:id'),
+    (0, common_1.Delete)('/:id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
@@ -145,8 +124,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "deleteUser", null);
 exports.UserController = UserController = __decorate([
-    (0, common_1.Controller)(),
+    (0, common_1.Controller)({ path: 'users' }),
     __metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService,
-        redis_service_1.RedisService])
+        jwt_service_1.JwtService])
 ], UserController);

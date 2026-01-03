@@ -1,16 +1,17 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { JwtModule } from '@nestjs/jwt'
 import { UserController } from './user.controller'
 import { User } from './user.entity'
 import { UserService } from './user.service'
 import { RedisModule } from '../../services/redis/redis.module'
+import { JwtModule } from '../../services/jwt/jwt.module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User], 'hs_marketplace'),
+    RedisModule,
     JwtModule,
-    RedisModule],
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

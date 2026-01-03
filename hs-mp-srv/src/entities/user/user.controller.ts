@@ -19,45 +19,33 @@ import { UpdateUserDto } from './dto/updateUser.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { RegisterUserDto } from './dto/registerUser.dto'
 import { compare } from 'bcrypt'
-import { JwtService } from '@nestjs/jwt'
-import { RedisService } from '../../services/redis/redis.service'
+import { JwtService } from '../../services/jwt/jwt.service'
+import { JwtAuthGuard } from '../../services/jwt/jwt-auth.guard'
+import { UseGuards } from '@nestjs/common'
 
-@Controller()
+
+@Controller({path: 'users'})
 export class UserController {
   constructor(
   private readonly userService: UserService, 
   private readonly jwtService: JwtService,
-  private readonly redisService: RedisService
   ){}
 
-  @Get('/users')
+  @Get('/')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
   async getAllUsers() {
     const users = await this.userService.getAllUsers()
     return { status: 'ok', data: users }
   }
 
-  @Get('/set-redis-key/:key')
-  @HttpCode(HttpStatus.OK)
-  async setRedisKey(@Param('key') key: string) {
-    await this.redisService.set(key, { test: 123 })
-    return { status: 'ok', data: null }
-  }
-
-  @Get('/get-redis-key/:key')
-  @HttpCode(HttpStatus.OK)
-  async getRedisKey(@Param('key') key: string) {
-    const value = await this.redisService.get(key)
-    return { status: 'ok', data: value }
-  }
-
-  @Get('/users/:id')
+  @Get(':id')
   async getUser(@Param('id', ParseIntPipe) id: number) {
     const userData = await this.userService.getUserById(id)
     return { status: 'ok', data: userData }
   }
 
-  @Post('/users')
+  @Post('/')
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() body: RegisterUserDto) {
     const user = await this.userService.createUser(body)
@@ -79,10 +67,9 @@ export class UserController {
 
     if (!isPasswordValid) throw new ForbiddenException()
 
-    const jwt = this.jwtService.sign(
-      { x: 1},
-      {secret: 'ggg'}
-    )
+    const jwt = await this.jwtService.setSession({
+      userId: foundUser.id
+    })
 
     return { status: 'ok', data: {accessToken: jwt}, }
   }
@@ -94,7 +81,7 @@ export class UserController {
     return { status: 'ok', data: null }
   }
 
-  @Put('/users/:id')
+  @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async updateUser(
     @Param('id', ParseIntPipe) id: number,
@@ -104,7 +91,7 @@ export class UserController {
     return { status: 'ok', data }
   }
 
-  @Delete('/users/:id')
+  @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
     await this.userService.deleteUser(id)

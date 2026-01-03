@@ -8,10 +8,9 @@ export class RedisService {
   private readonly redis!: Redis
 
   async set(key: string, data: { [k: string]: any }, expire?: number) {
-    if (expire !== undefined) {
-      return this.redis.set(key, JSON.stringify(data), 'EX', expire)
-    }
-    return this.redis.set(key, JSON.stringify(data))
+    return expire
+    ? await this.redis.set(key, JSON.stringify(data), 'EX', expire)
+    : await this.redis.set(key, JSON.stringify(data))
   }
 
   async get(key: string){
